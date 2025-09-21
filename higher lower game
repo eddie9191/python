@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Higher Lower: Movie Edition</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #000;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .score {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .movie {
+      border: 1px solid #333;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      background: #2a2a2a;
+    }
+    .vs {
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎬 Higher Lower: Movie Edition</h1>
+    <div class="score">Score: <span id="score">0</span></div>
+
+    <div class="movie" id="movieA"></div>
+    <div class="vs">VS</div>
+    <div class="movie" id="movieB"></div>
+
+    <div>
+      <button onclick="makeGuess('a')">Choose A</button>
+      <button onclick="makeGuess('b')">Choose B</button>
+    </div>
+
+    <div class="message" id="message"></div>
+  </div>
+
+  <script>
+    const data = [
+      { name: "Avengers: Endgame", description: "Superhero movie", country: "USA", follower_count: 2797 },
+      { name: "Titanic", description: "Romantic drama", country: "USA", follower_count: 2187 },
+      { name: "Avatar", description: "Science fiction", country: "USA", follower_count: 2847 },
+      { name: "Frozen II", description: "Animated musical", country: "USA", follower_count: 1450 },
+      { name: "Jurassic World", description: "Adventure sci-fi", country: "USA", follower_count: 1671 },
+      { name: "The Lion King", description: "Animated classic", country: "USA", follower_count: 1657 },
+      { name: "The Dark Knight", description: "Superhero thriller", country: "USA", follower_count: 1005 },
+      { name: "Inception", description: "Sci-fi thriller", country: "USA", follower_count: 829 },
+      { name: "Minions", description: "Animated comedy", country: "USA", follower_count: 1159 },
+      { name: "Furious 7", description: "Action", country: "USA", follower_count: 1516 }
+    ];
+
+    let score = 0;
+    let movieA, movieB;
+
+    function getRandomMovie(excludeMovie) {
+      let movie;
+      do {
+        movie = data[Math.floor(Math.random() * data.length)];
+      } while (movie === excludeMovie);
+      return movie;
+    }
+
+    function startRound() {
+      document.getElementById("message").textContent = "";
+
+      movieA = movieB || getRandomMovie();
+      movieB = getRandomMovie(movieA);
+
+      document.getElementById("movieA").textContent = formatMovie(movieA);
+      document.getElementById("movieB").textContent = formatMovie(movieB);
+    }
+
+    function formatMovie(movie) {
+      return `${movie.name}, a ${movie.description} from ${movie.country}`;
+    }
+
+    function makeGuess(guess) {
+      const a = movieA.follower_count;
+      const b = movieB.follower_count;
+
+      const isCorrect = (a > b && guess === 'a') || (b > a && guess === 'b');
+
+      if (isCorrect) {
+        score++;
+        document.getElementById("score").textContent = score;
+        document.getElementById("message").textContent = "✅ Correct!";
+        movieA = movieB;
+        movieB = null;
+        setTimeout(startRound, 1000);
+      } else {
+        document.getElementById("message").textContent = `❌ Wrong! Final Score: ${score}`;
+        score = 0;
+        document.getElementById("score").textContent = score;
+      }
+    }
+
+    // Start the first round
+    startRound();
+  </script>
+
+</body>
+</html>
